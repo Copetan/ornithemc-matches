@@ -149,12 +149,12 @@ async function dumpGraph(data: Data) {
     for (const era in versionsByEra) {
         lines.push(`  subgraph cluster_${era.replace(/[-.~]/g, '_')} {`)
         lines.push(`    label="${era}";`)
+        var spacer = ''
         for (const key of versionsByEra[era]) {
             const v = versions[key]
             if (!v) continue
             const {id, type, version} = v
             const typePrefix = type === 'merged' ? '' : type[0].toUpperCase() + type.slice(1) + ' '
-            var spacer = ''
             if (checkEra(era) && type === 'client' && versions['server' + '-' + version]) {
                 lines.push('    {')
                 lines.push('      rank=same;')
@@ -163,6 +163,7 @@ async function dumpGraph(data: Data) {
             lines.push(`    ${spacer}${id}[label="${typePrefix}${version}",href="https://skyrising.github.io/mc-versions/version/${version}.json"];`)
             if (checkEra(era) && type === 'server' && versions['client' + '-' + version]) {
                 lines.push('    }')
+                spacer = ''
             }
         }
         lines.push('  }')
