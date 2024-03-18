@@ -133,6 +133,10 @@ function weightedGeoMean(values: number[], weights: number[]) {
     return product ** (1 / weightSum)
 }
 
+function checkEra(era: string): boolean {
+    return era === 'beta' || era === '1.0' || era === '1.1' || era === '1.2' || era === '1.3'
+}
+
 async function dumpGraph(data: Data) {
     const {matches, versions, versionsByEra, statusByFile} = data
     const lines = [
@@ -150,7 +154,15 @@ async function dumpGraph(data: Data) {
             if (!v) continue
             const {id, type, version} = v
             const typePrefix = type === 'merged' ? '' : type[0].toUpperCase() + type.slice(1) + ' '
+            if (checkEra(era) && type === 'client' && versions['server' + '-' + version]) {
+                lines.push('    {')
+                lines.push('      rank=same;')
+                id = '  ' + id;
+            }
             lines.push(`    ${id}[label="${typePrefix}${version}",href="https://skyrising.github.io/mc-versions/version/${version}.json"];`)
+            if (checkEra(era) && type === 'server' && versions['client' + '-' + version]) {
+                lines.push('    }')
+            }
         }
         lines.push('  }')
     }
