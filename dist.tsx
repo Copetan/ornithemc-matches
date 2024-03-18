@@ -154,12 +154,13 @@ async function dumpGraph(data: Data) {
             if (!v) continue
             const {id, type, version} = v
             const typePrefix = type === 'merged' ? '' : type[0].toUpperCase() + type.slice(1) + ' '
+            var spacer = ''
             if (checkEra(era) && type === 'client' && versions['server' + '-' + version]) {
                 lines.push('    {')
                 lines.push('      rank=same;')
-                id = '  ' + id;
+                spacer = '  '
             }
-            lines.push(`    ${id}[label="${typePrefix}${version}",href="https://skyrising.github.io/mc-versions/version/${version}.json"];`)
+            lines.push(`    ${spacer}${id}[label="${typePrefix}${version}",href="https://skyrising.github.io/mc-versions/version/${version}.json"];`)
             if (checkEra(era) && type === 'server' && versions['client' + '-' + version]) {
                 lines.push('    }')
             }
